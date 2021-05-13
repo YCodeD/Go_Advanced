@@ -2,6 +2,8 @@ package main
 
 import (
 	v1 "book_project/api/book/v1"
+	"book_project/internal/dao"
+	"book_project/internal/pkg/db"
 	"book_project/internal/service"
 	"context"
 	"fmt"
@@ -17,17 +19,15 @@ import (
 )
 
 func main() {
-	service := service.NewBookService()
+	// 依赖注入
+	db := db.NewGormDB()
+	dao := dao.NewDao(db)
+	service := service.NewBookService(dao)
+
 	s := grpc.NewServer()
 	v1.RegisterBookServerServer(s, service)
 
 	g, ctx := errgroup.WithContext(context.Background())
-	g.Go(func() error {
-		<-ctx.Done()
-		log.Println("server shutting down...")
-		s.GracefulStop()
-		return nil
-	})
 
 	g.Go(func() error {
 		l, err := net.Listen("tcp", ":8080")
@@ -36,6 +36,13 @@ func main() {
 		}
 		fmt.Println("grpc server on :8080")
 		return s.Serve(l)
+	})
+
+	g.Go(func() error {
+		<-ctx.Done()
+		log.Println("server shutting down...")
+		s.GracefulStop()
+		return nil
 	})
 
 	g.Go(func() error {

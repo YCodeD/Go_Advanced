@@ -13,7 +13,11 @@ type Book struct {
 	Author string
 }
 
-func InitDB() *gorm.DB {
+type GormDB struct {
+	DB *gorm.DB
+}
+
+func NewGormDB() GormDB {
 	dsn := "root:123456@tcp(127.0.0.1:3306)/book?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -22,5 +26,7 @@ func InitDB() *gorm.DB {
 
 	db.AutoMigrate(Book{})
 
-	return db
+	return GormDB{
+		DB: db,
+	}
 }
