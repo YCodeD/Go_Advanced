@@ -12,3 +12,18 @@ package main
 会调用到第三方库或者是标准库，这个时候需要考虑使用errors.Wrap 或 errors.Wrapf
 保存堆栈信息，然后抛给上层调用方。
 */
+
+/*
+不应该把底层的错误信息wrap往上抛，应该进行一层包装之后再往上抛
+*/
+
+
+// tony 老师批改：
+// 这里应该是返回对应的NotFound error，例如：
+// if err == sql.ErrNoRows {
+// 	return errors.Wrapf(code.NotFount, fmt.Sprintf("sql: %s error: %v", sql, err))
+// } else {
+// 	return errors.Wrapf(code.Internal, fmt.Sprintf("sql: %s error: %v", sql, err))
+// }
+
+// 这样子在biz层可以 errors.Is(err, code.NotFound)，作业应该写个demo代码
