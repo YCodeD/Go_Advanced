@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"strconv"
 
 	"github.com/gomodule/redigo/redis"
 )
@@ -18,11 +17,5 @@ func init() {
 }
 
 func main() {
-	for i := 0; i < 10; i++ {
-		RCon.Do("DEL", "key:00000000000"+strconv.Itoa(i))
-	}
 
-	for i := 10; i < 100; i++ {
-		RCon.Do("DEL", "key:0000000000"+strconv.Itoa(i))
-	}
 }
