@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package book.v1;
+option go_package = "book/v1";
+
+service BookServer {
+    rpc GetBookInfo(GetBookInfoRequest) returns (GetBookInfoResponse) {}
+}
+
+message GetBookInfoRequest{}
+
+message GetBookInfoResponse{
+    string bookTitle = 1;
+    string bookAuthor = 2;
+}
